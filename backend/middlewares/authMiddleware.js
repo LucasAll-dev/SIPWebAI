@@ -14,6 +14,7 @@ const autenticar = (req, res, next) => {
         req.usuario = decoded; //adciona os dados do usuario a requisição
         next();
     } catch (err) {
+        console.error('Erro ao verificar token:', err); 
         res.status(401).send('Token invalido'); //informar erro 401
     };
 };
