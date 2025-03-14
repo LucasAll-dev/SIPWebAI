@@ -1,5 +1,6 @@
 const db = require('../config/db');
-const bcrypt = require('bcryptjs');
+// rosaj12: importando a biblioteca sha-3
+const crypto = require('crypto-js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -7,50 +8,61 @@ require('dotenv').config();
 const registrar = async (req, res) => {
     const { nome, sobrenome, email, senha } = req.body; //acessa os dados enviados ao corpo da requisição em JSON
     
-    if (!email.includes('@')) {
-        return res.status(400).send('Email inválido. O email deve conter "@".');
-    };
-    
+    // rosaj12: validação do email através do regex
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        return res.status(400).send('Email inválido.');
+    }
+
+    // rosaj12: criptogrando a senha com sha-3
     try {
-        const senhaCriptografada = await bcrypt.hash(senha, 10); //usando o framework bcrypt pra criptografar a senha
-        const query = 'INSERT INTO usuarios (nome, sobrenome, email, senha) VALUES (?, ?, ?, ?)';
+        const senhaCriptografada = crypto.SHA3(senha).toString();
+
+        const query = 'INSERT INTO usuarios(nome, sobrenome, email, senha) VALUES (?, ?, ?, ?)';
         db.query(query, [nome, sobrenome, email, senhaCriptografada], (err, result) => {
-            if(err) {
-                if(err.code === 'ER_DUP_ENTRY') {
+            if (err) {
+                if (err.code === 'ER_DUP_ENTRY') {
                     return res.status(400).send('Email já cadastrado.');
                 }
-                return res.status(500).send('Erro ao cadastrar usuario.'); //(anotações 2--)
-            };
-            res.status(200).send('Usuario cadastrado com sucesso!');
+                return res.status(500).send('Erro ao cadastrar usuário.');
+            }
+            return res.status(200).send('Usuário cadastrado.');
         });
     } catch (error) {
-        res.status(500).sen('Erro no servidor.');
-    };
+        res.status(500).send('Erro no servidor.');
+    }
 };
 
 // pra rota de login
 const logar = async (req, res) => {
     const { email, senha } = req.body;
-     
-    try {
-        const query = 'SELECT * FROM usuarios WHERE email = ?';
-        db.query(query, [email], async (err, results) => { //ta verificando o email
-            if (err) return res.status(500).send('Erro na execução'); //se houver erro na execução, o erro vai dar aqui
-            if(results.length === 0) return res.status(400).send('Usuario não encontrado'); //retorna um erro 400 'bad request'
-    
-        const usuario = results[0]; //armazena o resultado da query (usuario)
 
-        const validarSenha = await bcrypt.compare(senha, usuario.senha); //compara a senha enviada com a senha criptografada no banco de dados.
-        if(!validarSenha) return res.status(400).send('Senha Incorreta.'); //retorna um erro 400
-    
-        const tokenJWT = jwt.sign({ id: usuario.id }, 'secreto', { expiresIn: '1h' }); //cria um token secreto com as informações do usuario, e tbm permite q ele faça requisições sem precisar logar de novo (duracao 1h)
-        res.status(200).json({ 
-            logado: 'Usuario logado com sucesso',
-            tokenJWT: tokenJWT });
-        })
-    } catch (error) {
-        res.status(500).send('Erro no servidor.');
-    };
+        try {
+            const query = 'SELECT * FROM usuarios WHERE email = ?';
+            db.query(query, [email], async(err, results) => {
+                if (err){
+                    return res.status(500).send('Erro na execução');
+                }
+                if (results.length === 0) {
+                    return res.status(400).send('Usuário não encontrado');
+                }
+                const usuario = results[0];
+
+                // rosaj12: comparação a senha com sha-3
+                const senhaCriptografada = crypto.SHA3(senha).toString();
+                if(senhaCriptografada !== usuario.senha) {
+                    return res.status(400).send('Senha incorreta.');
+                }
+
+                const tokenJWT = jwt.sign({id: usuario.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+
+                res.status(200).json({
+                    mensagem: 'Usuário logado.', usuario: {id:usuario.id, email: usuario.email},
+                    token: tokenJWT
+                });
+            });
+        } catch (error) {
+            res.status(500).send('Erro no servidor.');
+        }
 };
 
 // para rota de atulizar perfil
@@ -59,70 +71,88 @@ const atualizarPerfil = async (req, res) => {
     const idUsuario = req.usuario.id;
 
     try {
-        const buscarUsuario = 'SELECT * FROM usuarios WHERE id = ?'; 
-        db.query(buscarUsuario, [idUsuario], async(err, results) => { //buscando dados do usuario
+        const buscarUsuario = 'SELECT * FROM usuarios WHERE id = ?';
+        db.query(buscarUsuario,[idUsuario], async(err, results) => {
             if (err) {
-                return res.status(500).send('Erro ao buscar usuario.');
+                return res.status(500).send('Erro ao buscar usuário');
+            }
+            if(results.length === 0) {
+                return res.status(404).send('Usuário não encontrado.');
             }
 
+            const usuario = results[0];
+        });
+
+        const usuario = results[0];
+
+        let senhaCriptografada;
+        if (senhaNova) {
+            if (!senhaAntiga) {
+                return res.status(400).send('Senha antiga é obrigatória para atualização.');
+
+            }
+            const senhaAntigaHash = crypto.SHA3(senhaAntiga).toString();
+            if(senhaAntigaHash !== usuario.senha) {
+                return res.status(400).send('Senha antiga incorreta.');
+            }
+            senhaCriptografada = crypto.SHA3(senhaNova).toString();
+        }
+        const atualizarUsuario = 'UPDATE usuarios SET nome = ?, sobrenome = ?, email = ?, senha = ? WHERE ID = ?';
+        const valores = [nome || usuario.nome, sobrenome || usuario.sobrenome, email || usuario.email,
+            senhaCriptografada || usuario.senha, idUsuario];
+        db.query(atualizarUsuario, valores, (err,results) => {
+            if (err) {
+                if(err.code === 'ER_DUP_ENTRY') {
+                    return res.status(400).send('Email já está cadastrado no sistema');
+                }
+                return res.status(500).send('Erro ao atualizar perfil');
+            }
+            return res.status(200).send('Perfil atualizado.')
+        });
+    } catch (error) {
+        return res.status(500).send('Erro no servidor');
+    }
+};
+
+//para rota de excluir perfil
+const excluirPerfil = async(req, res) => {
+    const {senha} = req.body; // rosaj12: o usuário deve fornecera senha para excluir a conta
+    
+    const idUsuario = req.usuario.id;
+
+    try {
+        // rosaj12: buscar o usuário pelo ID para oter a senha armazenada
+        const buscarUsuario = 'SELECT senha FROM usuarios WHERE ID = ?';
+        db.query(buscarUsuario, [idUsuario], async (err, results) => {
+            if (err) {
+                return res.status(500).send('Erro ao buscar o usuário.');
+            }
             if (results.length === 0) {
                 return res.status(404).send('Usuário não encontrado.');
             }
 
             const usuario = results[0];
-            
-            let senhaCriptografada;
-            //verificador: caso o usuario queira trocar a senha, precisa fornecer a senha antiga
-            if(senhaNova) {
-                if(!senhaAntiga) { 
-                    return res.status(400).send('Senha antiga é obrigatoria pra atualizar a senha.');
-                }
-                const senhaCorreta = await bcrypt.compare(senhaAntiga, usuario.senha);
-                if(!senhaCorreta) {
-                    return res.status(400).send('Senha antiga incorreta.');
-                }
 
-                senhaCriptografada = await bcrypt.hash(senhaNova, 10);
-            };
-            //atualizar usuario
-            const atualizarUsuario = 'UPDATE usuarios SET nome = ?, sobrenome = ?, email = ?, senha = ? WHERE id = ?';
-            const valores = [
-                nome || usuario.nome,
-                sobrenome || usuario.sobrenome,
-                email || usuario.email,
-                senhaCriptografada || usuario.senha,
-                idUsuario
-            ];
-            db.query(atualizarUsuario, valores, (err, results) => { // caso o usuario não queira trocar esses dados, continuaram os mesmos
-                if(err) {
-                    if(err.code === 'ER_DUP_ENTRY') {
-                        return res.status(400).send('Email já cadastrado.');
-                    }
-                    return res.status(500).send('Erro ao atualizar perfil.');
+            // rosaj12: comparação da senha informada com a senha armazenada no SHA-3
+            const senhaCriptografada = crypto.SHA3(senha).toString();
+            if (senhaCriptografada !== usuario.senha) {
+                return res.status(400).send('Senha incorreta. Não é possível excluir sua conta.');
+            } 
+
+            // rosaj12 : caso a senha estja correta, prosseguir com a exclusão
+            const query = 'DELETE FROM usuarios WHERE ID = ?';
+            db.query(query, [idUsuario], (err, results) => {
+                if (err) {
+                    return res.status(500).send('Erro ao excluir o perfil');
                 }
-                res.status(200).send('Perfil atualizado com sucesso!');   
-            })
-        })
-    } catch (error) {
-        res.status(500).send('Erro no servidor');
-    };
-};
-
-//para rota de excluir perfil
-const excluirPerfil = async(req, res) => {
-    const idUsuario = req.usuario.id;
-
-    try {
-        const query = 'DELETE FROM usuarios WHERE id = ?';
-        db.query(query, [idUsuario], (err, results) => {
-            if(err) {
-                return res.status(500).send('Erro ao excluir perfil.');
-            }
-            res.status(200).send('Perfil excluído com sucesso!');
-        })
+                return res.status(200).send('Perfil excluído com sucesso!');
+            });
+        });
     } catch (error) {
         res.status(500).send('Erro no servidor.');
     }
 };
 
+
+// resoaj12: exportando funções para uso de rotas
 module.exports = { registrar, logar, atualizarPerfil, excluirPerfil };

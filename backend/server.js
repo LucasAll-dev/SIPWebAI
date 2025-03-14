@@ -12,7 +12,9 @@ app.use(express.json());// permitindo processos corpos de requisições json
 app.use('/api', authRoutes);
 app.use('/api', notesRoutes);
 
-const PORT = process.env.PORT;
+// rosaj12: para evitar a falhar no servidor é melhor defini-lo, nesse caso 3000
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () =>{
     console.log(`Servidor rodando! http://localhost/${PORT}/`);
 });
