@@ -1,22 +1,18 @@
 const db = require('../config/db');
 
-// para rota criar nota
+// ryuuykz: para rota criar nota
 const criarNota = async (req, res) => {
     const { titulo, conteudo } = req.body;
-    const IdUsuario = req.usuario.id;
+    const usuario_id = req.usuario.id;
 
-    //verifica se um dos valores foi preenchido para criar nota
-    if(!conteudo && !titulo) {
-        return res.status(400).send('Preencha pelo menos um campo para criar a nota.');
+    // ryuuykz: corrigido para os dois serem obrigatios
+    if(!conteudo || !titulo) {
+        return res.status(400).send('É obrigatorio ter titulo e conteudo para criar nota.');
     }
-    
-    //caso nao preenchido, define como sem valor
-    const tituloFinal = titulo || 'Sem titulo';
-    const conteudoFinal = conteudo || 'Sem conteudo';
 
     try {
         const query = 'INSERT INTO notas (titulo, conteudo, usuario_id) VALUES (?, ?, ?)';
-        db.query(query, [tituloFinal, conteudoFinal, IdUsuario], (err, results) => {
+        db.query(query, [titulo, conteudo, usuario_id], (err, results) => {
             if(err) {
                 return res.status(500).send('Erro ao criar nota.');
             }
@@ -27,13 +23,13 @@ const criarNota = async (req, res) => {
     }
 };
 
-// listar todas as notas do usuario
+// ryuuykz:  listar todas as notas do usuario
 const listarNotas = async (req, res) => {
-    const IdUsuario = req.usuario.id;
+    const usuario_id = req.usuario.id;
 
     try {
         const query = 'SELECT id, titulo FROM notas WHERE usuario_id = ?';
-        db.query(query, [idUsuario], (err, results) => {
+        db.query(query, [usuario_id], (err, results) => {
             if(erro) {
                 return res.status(500).send('Erro ao buscar as notas.');
             }
@@ -44,14 +40,14 @@ const listarNotas = async (req, res) => {
     }
 }
 
-// mostrar nota especifica
+// ryuuykz:  mostrar nota especifica
 const verNota = async (req, res) => {
     const { id } = req.params;
-    const IdUsuario = req.usuario.id;
+    const usuario_id = req.usuario.id;
 
     try {
         const query = 'SELECT * FROM notas WHERE id = ? AND usuario_id = ?';
-        db.query(query, [id, idUsuario], (err, results) => {
+        db.query(query, [id, usuario_id], (err, results) => {
             if(err) {
                 return res.status(500).send('Erro ao buscar nota.');
             }
@@ -65,24 +61,22 @@ const verNota = async (req, res) => {
     }
 };
 
+// ryuuykz: atualizar nota
 const atualizarNota = async (req, res) => {
     const { id, titulo, conteudo } = req.body;
-    const IdUsuario = req.usuario.id;
+    const usuario_id = req.usuario.id;
 
     if(!id) {
         return res.status(400).send('Id da nota obrigatoria.');
     }
 
-    if(!titulo && !conteudo) {
-        return res.status(400).send('Preencha pelo menos um campo para criar a nota.');
+    if(!conteudo || !titulo) {
+        return res.status(400).send('É obrigatorio ter titulo e conteudo para criar nota.');
     }
-
-    const tituloFinal = titulo || 'Sem titulo';
-    const conteudoFinal = conteudo || 'Sem conteudo';
 
     try {
         const query = 'UPDATE notas SET titulo = ?, conteudo = ?, WHERE id = ? and usuario_id = ?';
-        db.query(query,[tituloFinal, conteudoFinal, id, IdUsuario], (err, results) => {
+        db.query(query,[titulo, conteudo, id, usuario_id], (err, results) => {
             if(err) {
                 return res.send(500).send('Erro ao atualizar nota.');
             }
@@ -96,9 +90,10 @@ const atualizarNota = async (req, res) => {
     }
 };
 
+// ryuuykz: excluir nota
 const excluirNota = async (req, res) => {
     const { id } = req.body;
-    const idUsuario = req.usuario.id;
+    const usuario_id = req.usuario.id;
 
     if(!id) {
         return res.status(400).send('Id da nota obrigatoria.');
@@ -106,7 +101,7 @@ const excluirNota = async (req, res) => {
 
     try {
         const query = 'DELETE FROM notas WHERE id = ? AND usuario_id = ?';
-        db.query(query, [id, idUsuario], (err, results) => {
+        db.query(query, [id, usuario_id], (err, results) => {
             if(err){
                 return res.status(500).send('Erro ao excluir nota');
             }

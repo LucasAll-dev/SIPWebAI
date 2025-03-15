@@ -4,7 +4,7 @@ const crypto = require('crypto-js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-//pra rota de registro
+// ryuuykz: pra rota de registro
 const registrar = async (req, res) => {
     const { nome, sobrenome, email, senha } = req.body; //acessa os dados enviados ao corpo da requisição em JSON
     
@@ -32,7 +32,7 @@ const registrar = async (req, res) => {
     }
 };
 
-// pra rota de login
+// ryuuykz:  pra rota de login
 const logar = async (req, res) => {
     const { email, senha } = req.body;
 
@@ -65,14 +65,14 @@ const logar = async (req, res) => {
         }
 };
 
-// para rota de atulizar perfil
+// ryuuykz:  para rota de atulizar perfil
 const atualizarPerfil = async (req, res) => {
     const { nome, sobrenome, email, senhaAntiga, senhaNova} = req.body;
-    const idUsuario = req.usuario.id;
+    const usuario_id = req.usuario.id; //  ryuukyz: alterei 'IdUsuario' para usuario_id, pra ficar igual do banco de dados
 
     try {
         const buscarUsuario = 'SELECT * FROM usuarios WHERE id = ?';
-        db.query(buscarUsuario,[idUsuario], async(err, results) => {
+        db.query(buscarUsuario,[usuario_id], async(err, results) => {
             if (err) {
                 return res.status(500).send('Erro ao buscar usuário');
             }
@@ -89,7 +89,6 @@ const atualizarPerfil = async (req, res) => {
         if (senhaNova) {
             if (!senhaAntiga) {
                 return res.status(400).send('Senha antiga é obrigatória para atualização.');
-
             }
             const senhaAntigaHash = crypto.SHA3(senhaAntiga).toString();
             if(senhaAntigaHash !== usuario.senha) {
@@ -99,7 +98,7 @@ const atualizarPerfil = async (req, res) => {
         }
         const atualizarUsuario = 'UPDATE usuarios SET nome = ?, sobrenome = ?, email = ?, senha = ? WHERE ID = ?';
         const valores = [nome || usuario.nome, sobrenome || usuario.sobrenome, email || usuario.email,
-            senhaCriptografada || usuario.senha, idUsuario];
+            senhaCriptografada || usuario.senha, usuario_id];
         db.query(atualizarUsuario, valores, (err,results) => {
             if (err) {
                 if(err.code === 'ER_DUP_ENTRY') {
@@ -114,16 +113,16 @@ const atualizarPerfil = async (req, res) => {
     }
 };
 
-//para rota de excluir perfil
+// ryuuykz: para rota de excluir perfil
 const excluirPerfil = async(req, res) => {
     const {senha} = req.body; // rosaj12: o usuário deve fornecera senha para excluir a conta
     
-    const idUsuario = req.usuario.id;
+    const usuario_id = req.usuario.id;
 
     try {
         // rosaj12: buscar o usuário pelo ID para oter a senha armazenada
         const buscarUsuario = 'SELECT senha FROM usuarios WHERE ID = ?';
-        db.query(buscarUsuario, [idUsuario], async (err, results) => {
+        db.query(buscarUsuario, [usuario_id], async (err, results) => {
             if (err) {
                 return res.status(500).send('Erro ao buscar o usuário.');
             }
@@ -141,7 +140,7 @@ const excluirPerfil = async(req, res) => {
 
             // rosaj12 : caso a senha estja correta, prosseguir com a exclusão
             const query = 'DELETE FROM usuarios WHERE ID = ?';
-            db.query(query, [idUsuario], (err, results) => {
+            db.query(query, [usuario_id], (err, results) => {
                 if (err) {
                     return res.status(500).send('Erro ao excluir o perfil');
                 }

@@ -4,7 +4,7 @@ require('dotenv').config();
 // rosaj12: É melhor utilizar o createPool() ao invés do createConnection(), pois o createPool() gera múltiplas...
 // ... conexões automaticamente, enquanto o createConnection() mantém somente uma única conexão
 const db = mysql.createPool({ //conectando mySQL 
-    //puxando os dados do arquivo .env
+    // ryuuykz: puxando os dados do arquivo .env
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -14,7 +14,7 @@ const db = mysql.createPool({ //conectando mySQL
     queueLimit: 0
 });
 
-db.connect((err) => { //verificando a conexao (anotações 1--)
+db.connect((err) => { //verificando a conexao
     if(err) throw err;
     console.log('MySQL conectado');
 });

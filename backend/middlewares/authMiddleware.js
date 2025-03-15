@@ -6,7 +6,7 @@ const autenticar = (req, res, next) => {
     const token = req.headers['authorization'];
 
     if(!token) {
-        return res.status(401).send('Token não fornecido'); //se o token não for fornecido, returna um erro 401(nao informado)
+        return res.status(400).send('Token não fornecido'); //se o token não for fornecido, returna um erro 401(nao informado)
     };
 
     try {
@@ -15,7 +15,7 @@ const autenticar = (req, res, next) => {
         next();
     } catch (err) {
         console.error('Erro ao verificar token:', err); 
-        res.status(401).send('Token invalido'); //informar erro 401
+        res.status(400).send('Token invalido'); //informar erro 401
     };
 };
 
