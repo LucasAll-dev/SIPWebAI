@@ -1,7 +1,0 @@
-[
-    {"hora_inicio": 9, "duracao": 2, "produtividade": 80},
-    {"hora_inicio": 10, "duracao": 1, "produtividade": 90},
-    {"hora_inicio": 14, "duracao": 3, "produtividade": 70},
-    {"hora_inicio": 15, "duracao": 2, "produtividade": 85},
-    {"hora_inicio": 16, "duracao": 1, "produtividade": 75}
-]

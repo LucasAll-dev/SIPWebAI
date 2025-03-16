@@ -1,1 +1,17 @@
-{"hora_inicio": 15, "duracao": 2}
+[
+    {"hora_inicio": 8, "duracao": 2},
+    {"hora_inicio": 9, "duracao": 1},
+    {"hora_inicio": 10, "duracao": 3},
+    {"hora_inicio": 11, "duracao": 2},
+    {"hora_inicio": 12, "duracao": 1},
+    {"hora_inicio": 13, "duracao": 4},
+    {"hora_inicio": 14, "duracao": 2},
+    {"hora_inicio": 15, "duracao": 3},
+    {"hora_inicio": 16, "duracao": 1},
+    {"hora_inicio": 17, "duracao": 2},
+    {"hora_inicio": 8, "duracao": 2},
+    {"hora_inicio": 9, "duracao": 1},
+    {"hora_inicio": 10.30, "duracao": 3},
+    {"hora_inicio": 11.30, "duracao": 2},
+    {"hora_inicio": 12.30, "duracao": 1}
+]
