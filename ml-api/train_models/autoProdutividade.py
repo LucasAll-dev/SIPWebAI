@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 import joblib
 
 # Carrega os dados para o treinamento do modelo em formato JSON
-df = pd.read_json("/home/flipp/SIPWebAI/ml-api/data/train/performace.json")
+df = pd.read_json("../data/train/performace.json")
 
 # dividimos os dados em eixo x e y
 X = df[['hora_inicio', 'duracao']]
@@ -30,7 +30,7 @@ print(f'Acuracia no treino: {train_score:.2f}')
 print(f'Acuracia no teste: {test_score:.2f}')
 
 # verifica para o diretorio onde o modelo sera salva
-model_dir = '/home/flipp/SIPWebAI/ml-api/models-ml'
+model_dir = '../models-ml'
 model_path = os.path.join(model_dir, 'produtividadeAuto.pkl')
 
 
@@ -42,11 +42,11 @@ if not os.path.exists(model_dir):
 
 # salva o modelo treinado
 joblib.dump(model, model_path)
-joblib.dump(scaler, '/home/flipp/SIPWebAI/ml-api/models-ml/scaler.pkl')
+joblib.dump(scaler, '../models-ml/scaler.pkl')
 print("Modelo treinado e salvo con sucesso")
 
 # carregar o arquivo JSON para teste
-df_arquivo_test = pd.read_json('/home/flipp/SIPWebAI/ml-api/data/test/produtividade.json')
+df_arquivo_test = pd.read_json('../data/test/produtividade.json')
 
 # Pre-processar os novos dados
 new_df_scaled = scaler.transform(df_arquivo_test[['hora_inicio', 'duracao']])
