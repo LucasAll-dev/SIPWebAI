@@ -1,0 +1,116 @@
+[
+    {
+        "dia_da_semana": 2,
+        "prioridade": 2,     
+        "duracao": 2,        
+        "horario_sugerido": 7
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 2,
+        "duracao": 2,
+        "horario_sugerido": 8
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 1,
+        "duracao": 3,        
+        "horario_sugerido": 9  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 1,
+        "duracao": 3,
+        "horario_sugerido": 10  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 1,
+        "duracao": 3,
+        "horario_sugerido": 11  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,     
+        "duracao": 4,
+        "horario_sugerido": 12  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,
+        "duracao": 4,
+        "horario_sugerido": 13  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 1,     
+        "duracao": 3,
+        "horario_sugerido": 14  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 1,
+        "duracao": 3,
+        "horario_sugerido": 15  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 1,
+        "duracao": 3,
+        "horario_sugerido": 16  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,     
+        "duracao": 4,
+        "horario_sugerido": 17  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,
+        "duracao": 4,
+        "horario_sugerido": 18  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,     
+        "duracao": 5,        
+        "horario_sugerido": 19  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,
+        "duracao": 5,
+        "horario_sugerido": 20  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,
+        "duracao": 5,
+        "horario_sugerido": 21  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,
+        "duracao": 5,
+        "horario_sugerido": 22  
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,
+        "duracao": 5,
+        "horario_sugerido": 23
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,
+        "duracao": 5,
+        "horario_sugerido": 0   
+    },
+    {
+        "dia_da_semana": 2,
+        "prioridade": 0,
+        "duracao": 5,
+        "horario_sugerido": 1   
+    }
+]

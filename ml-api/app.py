@@ -7,12 +7,12 @@ import numpy as np
 app = Flask(__name__)
 
 # Caregao modelo de automacao de tarefas (Random Forest)
-model_tasks = load('./train/autotarefa/modelo_priorizacao.pkl')
+model_tarefas = load('./models-ml/tarefasAuto.pkl')
+model_horarios = load('./models-ml/horariosAuto.pkl')
 
-
-# Rota principal
-@app.route('/predict', methods=['POST'])
-def predict():
+# Rota para previsao de prioridade de tarefas
+@app.route('/tarefas', methods=['POST'])
+def tarefas():
     try:    
         # Recebe dados do request
         data = request.get_json(force=True)
@@ -30,16 +30,47 @@ def predict():
         urgencia = data['urgencia']
 
         # Cria um array numpy com as features
-        tarefas = np.array([prazo, importancia, complexidade, urgencia]).reshape(1, -1)
+        tarefa = np.array([prazo, importancia, complexidade, urgencia]).reshape(1, -1)
 
         #Fazer a previsao
-        prediction = model_tasks.predict(tarefas)
+        prediction = model_tarefas.predict(tarefa)
 
         #Retorna a previsao como resposta
         return jsonify({'prioridade': int(prediction[0])})
     
     except Exception as e:
-        # log do erro para depuracao
+        # log do erro
+        app.logger.error(f"Erro durante a previsao: {str(e)}")
+        return jsonify({'error': 'Erro do Servior Interno'}), 500
+
+# Rota para previsao de horarios
+@app.route('/horarios', methods={'POST'})
+def horarios():
+    try:
+        # revebe dados do request
+        data_horarios = request.get_json(force=True)
+
+        # verifica se todas as chaves necessarias estao presentes
+        required_Keys = ['dia_da_semana', 'prioridade', 'duracao']
+        if not all(Key in data_horarios for Key in required_Keys):
+            return jsonify({'error': 'Campos obrigatorios ausentes'}), 400
+        
+        # entrair as features do json
+        dia_da_semana = data_horarios['dia_da_semana']
+        prioridade = data_horarios['prioridade']
+        duracao = data_horarios['duracao']
+
+        # cria um array numpy com as features
+        horario = np.array([dia_da_semana, prioridade, duracao]).reshape(1, -1)
+
+        # faz a previsao
+        pred_horario = model_horarios.predict(horario)
+
+        # retorns s previsao 
+        return jsonify({'horario_sugerido': int(pred_horario[0])})
+    
+    except Exception as e:
+        # log do erro
         app.logger.error(f"Erro durante a previsao: {str(e)}")
         return jsonify({'error': 'Erro do Servior Interno'}), 500
 
