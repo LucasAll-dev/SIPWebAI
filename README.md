@@ -8,14 +8,28 @@ npm install express mysql2 dotenv bcryptjs jsonwebtoken cors
 
 ### Para podermos iniciar a API do modulo de Machine Learning
 
-Primeiro instale o POETRY:
-Link para instalar e configurar o poetry: https://medium.com/@volneycasas/usando-o-poetry-em-seus-projetos-python-70be5f018281
+Link para instalar o PYENV: https://github.com/pyenv-win/pyenv-win
 
-Inicie o Ambiente Virtual:
-- poetry shell
+Instale o PYENV com o terminal como administrador
 
-Instalar as bibliotecas usadas:
-- poetry add Flask pandas Numpy scikit-learn joblib waitress
+Configure o PYENV:
+ - pyenv global 3.13.2  
+Esse 3.13.2 troque pela sua versao do python instalada na sua maquina
+
+Instale o poetry:
+ - pip install poetry
+
+Configure o poetry:
+ - poetry config virtualenvs.in-project true
+
+Na pasta da API de machine learning instale todas as dependencias utilizadas:
+ - poetry install
+
+Instale o comando SHELL: 
+ - poetry self add poetry-plugin-shell
+
+Inicie o ambiente virtual:
+ - poetry shell
 
 Iniciar o Servidor: 
 - poetry run python app.py
