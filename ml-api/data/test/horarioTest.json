@@ -1,0 +1,12 @@
+[
+    {
+        "dia_da_semana": 2,
+        "prioridade": 1,
+        "duracao": 9
+    },
+    {
+        "dia_da_semana": 9,
+        "prioridade": 0,
+        "duracao": 1
+    }
+]
