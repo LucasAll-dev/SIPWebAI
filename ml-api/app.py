@@ -3,6 +3,11 @@ from joblib import load
 import numpy as np
 
 
+# Rotas da api para conexao com o backend
+# http://localhost:5000/tarefas
+# http://localhost:5000/horarios
+
+
 # Instancia Flask
 app = Flask(__name__)
 
@@ -12,7 +17,7 @@ model_horarios = load('./models-ml/horariosAuto.pkl')
 
 # Rota para previsao de prioridade de tarefas
 @app.route('/tarefas', methods=['POST'])
-def tarefas():
+def autarefa():
     try:    
         # Recebe dados do request
         data = request.get_json(force=True)
@@ -45,7 +50,7 @@ def tarefas():
 
 # Rota para previsao de horarios
 @app.route('/horarios', methods={'POST'})
-def horarios():
+def horas():
     try:
         # revebe dados do request
         data_horarios = request.get_json(force=True)
