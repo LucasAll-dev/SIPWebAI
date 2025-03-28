@@ -14,11 +14,6 @@ const db = mysql.createPool({ //conectando mySQL
     queueLimit: 0
 });
 
-db.connect((err) => { //verificando a conexao
-    if(err) throw err;
-    console.log('MySQL conectado');
-});
-
 
 // rosaj12: o getConnection evita que o servidor seja derrubado
 db.getConnection((err, connection) => {

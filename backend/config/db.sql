@@ -29,3 +29,14 @@ CREATE TABLE tarefas (
     usuario_id INT,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+CREATE TABLE eventos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    conteudo TEXT,
+    data_evento DATETIME NOT NULL,
+    endereco VARCHAR(255) NOt NULL,
+    concluida BOOLEAN DEFAULT FALSE,
+    usuario_id INT,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);

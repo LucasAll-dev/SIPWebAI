@@ -3,6 +3,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes.js');
 const notesRoutes = require('./routes/notesRoutes.js');
 const taskRoutes = require('./routes/taskRoutes.js');
+const eventRoutes = require('./routes/eventRoutes.js');
 require('dotenv').config();
 
 const app = express(); //instanciando o express
@@ -13,6 +14,7 @@ app.use(express.json());// permitindo processos corpos de requisições json
 app.use('/api', authRoutes);
 app.use('/api', notesRoutes);
 app.use('/api', taskRoutes);
+app.use('/api', eventRoutes);
 
 // rosaj12: para evitar a falhar no servidor é melhor defini-lo, nesse caso 3000
 // ryuuykz: troquei a rota do env pra 3000
