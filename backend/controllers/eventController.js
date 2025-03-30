@@ -2,7 +2,7 @@ const db = require('../config/db');
 const axios = require('axios');
 const ML_API_URL = process.env.ML_API_URL || 'http://localhost:5000';
 
-
+//ryuukyz: LEMBRETE A MIM MESMO, LEMBRAR DE COLOCAR FUNÇÔES AUXILIARES AQUI TBM
 // ryuukyz: criar novo evento || ATT: com prioridade
 const criarEvento = async (req, res) => {
     const { titulo, conteudo, data_evento, endereco, duracao = 1, importancia = 3 } = req.body; // ryuukyz: att com prioridade
