@@ -27,6 +27,10 @@ CREATE TABLE tarefas (
     data_conclusao DATETIME NOT NULL,
     concluida BOOLEAN DEFAULT FALSE,
     usuario_id INT,
+    prioridade INT NOT NULL DEFAULT 3,
+    importancia INT NOT NULL DEFAULT 3,
+    complexidade INT NOT NULL DEFAULT 2,
+    urgencia INT NOT NULL DEFAULT 3,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
@@ -38,5 +42,8 @@ CREATE TABLE eventos (
     endereco VARCHAR(255) NOt NULL,
     concluida BOOLEAN DEFAULT FALSE,
     usuario_id INT,
+    prioridade INT NOT NULL DEFAULT 3,
+    duracao INT NOT NULL DEFAULT 1,
+    importancia INT NOT NULL DEFAULT 3;
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
