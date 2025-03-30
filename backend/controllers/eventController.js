@@ -14,6 +14,7 @@ const criarEvento = async (req, res) => {
 
     try {
         // ryuukyz: nao sei ao certo se isso ta certo ou se vai funcionar
+        //s
         const { data: { prioridade } } = await axios.post(`${ML_API_URL}/horarios`, {
             dia_da_semana: new Date(data_evento).getDay(),
             duracao,
