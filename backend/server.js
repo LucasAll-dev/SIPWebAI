@@ -26,3 +26,7 @@ app.listen(PORT, () =>{
 
 const IA_rotas = require("./routes/IA_rotas.js");
 app.use("/api/ia", IA_rotas);
+
+const relatorioRotas = require("./routes/relatorioRotas.js");
+app.use("/api/relatorios", relatorioRotas);
+
