@@ -23,3 +23,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>{
     console.log(`Servidor rodando! http://localhost/${PORT}/`);
 });
+
+const IA_rotas = require("./routes/IA_rotas.js");
+app.use("/api/ia", IA_rotas);
