@@ -6,6 +6,8 @@ import PaginaLogin from "./paginas/PaginaLogin";
 import PaginaNaoEncontrada from "./paginas/PaginaNaoEncontrada";
 import { useAutenticacao } from "./contexto/ContextoAutenticacao";
 import PaginaRegistro from "./paginas/PaginaRegistro";
+import PaginaSugestoes from "./paginas/PaginaSugestoes";
+import PaginaDashboard from "./paginas/PaginaDashboard";
 
 function RotaPrivada({children}) {
     const {usuario} = useAutenticacao();
@@ -24,6 +26,16 @@ export default function RotasApp() {
                 }
             />
             <Route path="*" element={<PaginaNaoEncontrada />} />
+            <Route path="/sugestoes" element={
+                <RotaPrivada>
+                    <PaginaSugestoes />
+                </RotaPrivada>
+            } />
+            <Route path="/dashboard" element={
+                <RotaPrivada>
+                    <PaginaDashboard />
+                </RotaPrivada>
+            } />
         </Routes>
     );
 }
